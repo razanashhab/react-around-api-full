@@ -47,7 +47,7 @@ export class Auth {
 }
 
 const auth = new Auth({
-  baseUrl: "https://prac-demo.crabdance.com",
+  baseUrl: "https://api.prac-proj.mooo.com",
   headers: {
     "Content-Type": "application/json",
   },

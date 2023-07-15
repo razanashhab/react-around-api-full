@@ -1,12 +1,6 @@
 import Header from "./Header";
 import React from "react";
-import {
-  Route,
-  Switch,
-  Redirect,
-  withRouter,
-  useHistory,
-} from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";

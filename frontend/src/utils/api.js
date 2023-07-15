@@ -77,7 +77,7 @@ export class Api {
 }
 
 const api = new Api({
-  baseUrl: "https://aprac-demo.crabdance.com",
+  baseUrl: "https://api.prac-proj.mooo.com",
   headers: {
     "Content-Type": "application/json",
   },

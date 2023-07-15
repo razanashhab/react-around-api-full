@@ -1,12 +1,12 @@
 const router = require("express").Router();
 const {
-    getUsers,
-    getUser,
-    createUser,
-    updateProfile,
-    updateAvatar,
-    getUserByToken,
-    login,
+  getUsers,
+  getUser,
+  createUser,
+  updateProfile,
+  updateAvatar,
+  getUserByToken,
+  login,
 } = require("../controllers/users");
 const { celebrate, Joi } = require("celebrate");
 const { validateURL } = require("../utils/validator");
@@ -14,73 +14,73 @@ const { validateURL } = require("../utils/validator");
 router.get("/users", getUsers);
 
 router.get(
-    "/users/:userId",
-    celebrate({
-        params: Joi.object().keys({
-            postId: Joi.string().alphanum().length(24),
-        }),
+  "/users/:userId",
+  celebrate({
+    params: Joi.object().keys({
+      postId: Joi.string().alphanum().length(24),
     }),
-    getUser
+  }),
+  getUser
 );
 
 router.post(
-    "/users",
-    celebrate({
-        body: Joi.object().keys({
-            email: Joi.string().required().email(),
-            password: Joi.string().required().min(8),
-            name: Joi.string().required().min(2).max(30),
-            about: Joi.string().required().min(2).max(30),
-            avatar: Joi.string().custom(validateURL),
-        }),
+  "/users",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+      name: Joi.string().required().min(2).max(30),
+      about: Joi.string().required().min(2).max(30),
+      avatar: Joi.string().custom(validateURL),
     }),
-    createUser
+  }),
+  createUser
 );
 
 router.patch(
-    "/users/me",
-    celebrate({
-        body: Joi.object().keys({
-            name: Joi.string().required().min(2).max(30),
-            about: Joi.string().required().min(2).max(30),
-            avatar: Joi.string().custom(validateURL),
-        }),
+  "/users/me",
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      about: Joi.string().required().min(2).max(30),
+      avatar: Joi.string().custom(validateURL),
     }),
-    updateProfile
+  }),
+  updateProfile
 );
 
 router.patch(
-    "/users/me/avatar",
-    celebrate({
-        body: Joi.object().keys({
-            avatar: Joi.string().custom(validateURL),
-        }),
+  "/users/me/avatar",
+  celebrate({
+    body: Joi.object().keys({
+      avatar: Joi.string().custom(validateURL),
     }),
-    updateAvatar
+  }),
+  updateAvatar
 );
 
 router.get("/users/me", getUserByToken);
 
 router.post(
-    "/signin",
-    celebrate({
-        body: Joi.object().keys({
-            email: Joi.string().required().email(),
-            password: Joi.string().required().min(8),
-        }),
+  "/signin",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
     }),
-    login
+  }),
+  login
 );
 
 router.post(
-    "/signup",
-    celebrate({
-        body: Joi.object().keys({
-            email: Joi.string().required().email(),
-            password: Joi.string().required().min(8),
-        }),
+  "/signup",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
     }),
-    createUser
+  }),
+  createUser
 );
 
 module.exports = router;

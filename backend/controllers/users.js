@@ -3,6 +3,7 @@ const { NotFoundError } = require("../errors/NotFoundError");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getUsers = (req, res) => {
   Users.find({})
@@ -21,10 +22,11 @@ module.exports.getUser = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const { email, password, name, about, avatar } = req.body;
+  console.log(`${email} ${password}`);
   bcrypt
     .hash(password, 10)
     .then((hash) =>
-      User.create({
+      Users.create({
         email,
         password: hash,
         name,
@@ -65,30 +67,26 @@ module.exports.updateAvatar = (req, res) => {
 
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
-
-  User.findOne({ email })
-    .select("+password")
+  return Users.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        return Promise.reject(new Error("Incorrect password or email"));
-      }
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        // the hashes didn't match, rejecting the promise
-        return Promise.reject(new Error("Incorrect password or email"));
-      }
-      // successful authentication
-      const token = jwt.sign(
-        { _id: user._id },
-        NODE_ENV === "production" ? JWT_SECRET : "super-strong-secret",
-        {
-          expiresIn: "7d",
-        }
+      console.log(
+        `token is ${jwt.sign(
+          { _id: user._id },
+          NODE_ENV === "production" ? JWT_SECRET : "super-strong-secret",
+          {
+            expiresIn: "7d",
+          }
+        )}`
       );
-      // we return the token
-      res.send({ token });
+      res.send({
+        token: jwt.sign(
+          { _id: user._id },
+          NODE_ENV === "production" ? JWT_SECRET : "super-strong-secret",
+          {
+            expiresIn: "7d",
+          }
+        ),
+      });
     })
     .catch(next);
 };

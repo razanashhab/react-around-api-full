@@ -11,7 +11,8 @@ const {
 const { PORT = 3000 } = process.env;
 const app = express();
 const auth = require("./middleware/auth");
-const { errors } = require("celebrate");
+const { createUser, login } = require("./controllers/users");
+const { celebrate, Joi, errors } = require("celebrate");
 const { requestLogger, errorLogger } = require("./middleware/logger");
 var cors = require("cors");
 
@@ -30,6 +31,28 @@ app.get("/crash-test", () => {
     throw new Error("Server will crash now");
   }, 0);
 });
+
+app.post(
+  "/signin",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+    }),
+  }),
+  login
+);
+
+app.post(
+  "/signup",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+    }),
+  }),
+  createUser
+);
 
 // authorization
 app.use(auth);
