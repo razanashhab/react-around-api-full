@@ -1,5 +1,5 @@
 const Users = require("../models/user");
-const { NotFoundError } = require("../errors/NotFoundError");
+const { NotFoundError, BadRequestError } = require("../errors/NotFoundError");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -8,7 +8,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 module.exports.getUsers = (req, res) => {
   Users.find({})
     .then((users) => res.send({ data: users }))
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.getUser = (req, res) => {
@@ -17,12 +17,11 @@ module.exports.getUser = (req, res) => {
       throw new NotFoundError("No user with matching ID found");
     })
     .then((user) => res.send({ data: user }))
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.createUser = (req, res) => {
   const { email, password, name, about, avatar } = req.body;
-  console.log(`${email} ${password}`);
   bcrypt
     .hash(password, 10)
     .then((hash) =>
@@ -34,8 +33,11 @@ module.exports.createUser = (req, res) => {
         avatar,
       })
     )
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+    .then((user) => {
+      if (!user) throw new BadRequestError("Validation Error");
+      return res.send({ data: user });
+    })
+    .catch((err) => next(err));
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -49,7 +51,7 @@ module.exports.updateProfile = (req, res) => {
       throw new NotFoundError("No user with matching ID found");
     })
     .then((user) => res.send({ data: user }))
-    .catch(next);
+    .catch((err) => next(err));
 };
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
@@ -62,22 +64,13 @@ module.exports.updateAvatar = (req, res) => {
       throw new NotFoundError("No user with matching ID found");
     })
     .then((user) => res.send({ data: user }))
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
   return Users.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(
-        `token is ${jwt.sign(
-          { _id: user._id },
-          NODE_ENV === "production" ? JWT_SECRET : "super-strong-secret",
-          {
-            expiresIn: "7d",
-          }
-        )}`
-      );
       res.send({
         token: jwt.sign(
           { _id: user._id },
@@ -88,7 +81,7 @@ module.exports.login = (req, res) => {
         ),
       });
     })
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.getUserByToken = (req, res) => {
@@ -97,5 +90,5 @@ module.exports.getUserByToken = (req, res) => {
       throw new NotFoundError("No user with matching ID found");
     })
     .then((user) => res.send({ data: user }))
-    .catch(next);
+    .catch((err) => next(err));
 };

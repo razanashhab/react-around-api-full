@@ -4,14 +4,14 @@ const { NotFoundError } = require("../errors/NotFoundError");
 module.exports.getCards = (req, res) => {
   Cards.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   Cards.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -20,7 +20,7 @@ module.exports.deleteCard = (req, res) => {
       throw new NotFoundError("No card found with that id");
     })
     .then((card) => res.send({ data: card }))
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.likeACard = (req, res) => {
@@ -35,7 +35,7 @@ module.exports.likeACard = (req, res) => {
       throw new NotFoundError("No card found with that id");
     })
     .then((card) => res.send({ data: card }))
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.unlikeACard = (req, res) => {
@@ -48,5 +48,5 @@ module.exports.unlikeACard = (req, res) => {
       throw new NotFoundError("No card found with that id");
     })
     .then((card) => res.send({ data: card }))
-    .catch(next);
+    .catch((err) => next(err));
 };
