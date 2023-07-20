@@ -74,10 +74,9 @@ app.use((err, req, res, next) => {
         res.status(BAD_REQUEST).send({ message: err.message });
     else if (err.name === "CastError")
         res.status(BAD_REQUEST).send({ message: err.message });
-    else
-        res
-        .status(DEFAULT)
-        .send({ message: "An error has occurred on the server" });
+    else if (err.statusCode == NOT_AUTHORIZED)
+        res.status(NOT_AUTHORIZED).send({ message: err.message });
+    else res.status(DEFAULT).send({ message: err.message });
 });
 
 app.listen(PORT, () => {

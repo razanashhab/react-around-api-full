@@ -67,8 +67,10 @@ module.exports.updateAvatar = (req, res) => {
 
 module.exports.login = (req, res) => {
     const { email, password } = req.body;
+    console.log(`${email}--${password}`);
     return Users.findUserByCredentials(email, password)
         .then((user) => {
+            console.log(`id is: ${user._id}`);
             return res.send({
                 token: jwt.sign({ _id: user._id },
                     NODE_ENV === "production" ? JWT_SECRET : "super-strong-secret", {
@@ -78,12 +80,13 @@ module.exports.login = (req, res) => {
             });
         })
         .catch((err) => {
+            console.log(`error is: ${err.message}`);
             res.status(401).send({ message: `Error is:${err.message}` });
         });
 };
 
 module.exports.getUserByToken = (req, res) => {
-    console.log(req.user._id);
+    console.log(`Enter getUserByToken ${req.user._id}`);
     Users.findById(req.user._id)
         .orFail(() => {
             throw new NotFoundError("No user with matching ID found");
