@@ -11,17 +11,19 @@ const {
 const { celebrate, Joi } = require("celebrate");
 const { validateURL } = require("../utils/validator");
 
-router.get("/users", getUsers);
+router.get("/users/me", getUserByToken);
 
-router.get(
-  "/users/:userId",
-  celebrate({
-    params: Joi.object().keys({
-      postId: Joi.string().alphanum().length(24),
-    }),
-  }),
-  getUser
-);
+// router.get("/users", getUsers);
+
+// router.get(
+//   "/users/:userId",
+//   celebrate({
+//     params: Joi.object().keys({
+//       userId: Joi.string().alphanum(),
+//     }),
+//   }),
+//   getUser
+// );
 
 router.post(
   "/users",
@@ -58,8 +60,6 @@ router.patch(
   }),
   updateAvatar
 );
-
-router.get("/users/me", getUserByToken);
 
 router.post(
   "/signin",

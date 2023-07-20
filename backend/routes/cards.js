@@ -9,8 +9,6 @@ const {
 const { celebrate, Joi } = require("celebrate");
 const { validateURL } = require("../utils/validator");
 
-router.get("/cards", getCards);
-
 router.post(
     "/cards",
     celebrate({
@@ -51,5 +49,7 @@ router.delete(
     }),
     unlikeACard
 );
+
+router.get("/cards", getCards);
 
 module.exports = router;

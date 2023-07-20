@@ -8,16 +8,18 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 module.exports.getUsers = (req, res) => {
     Users.find({})
         .then((users) => res.send({ data: users }))
-        .catch((err) => next(err));
+        .catch(next);
 };
 
 module.exports.getUser = (req, res) => {
+    console.log(`user id is:
+        $ { req.params }`);
     Users.findById(req.params.userId)
         .orFail(() => {
             throw new NotFoundError("No user with matching ID found");
         })
         .then((user) => res.send({ data: user }))
-        .catch((err) => next(err));
+        .catch(next);
 };
 
 module.exports.createUser = (req, res) => {
@@ -67,7 +69,7 @@ module.exports.login = (req, res) => {
     const { email, password } = req.body;
     return Users.findUserByCredentials(email, password)
         .then((user) => {
-            res.send({
+            return res.send({
                 token: jwt.sign({ _id: user._id },
                     NODE_ENV === "production" ? JWT_SECRET : "super-strong-secret", {
                         expiresIn: "7d",
@@ -75,14 +77,20 @@ module.exports.login = (req, res) => {
                 ),
             });
         })
-        .catch((err) => next(err));
+        .catch((err) => {
+            res.status(401).send({ message: `Error is:${err.message}` });
+        });
 };
 
 module.exports.getUserByToken = (req, res) => {
-    Users.findById(req.params.user._id)
+    console.log(req.user._id);
+    Users.findById(req.user._id)
         .orFail(() => {
             throw new NotFoundError("No user with matching ID found");
         })
-        .then((user) => res.send({ data: user }))
-        .catch((err) => next(err));
+        .then((user) => {
+            console.log(user);
+            return res.send({ data: user });
+        })
+        .catch(next);
 };

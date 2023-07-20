@@ -2,10 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const {
-  NOT_FOUND,
-  BAD_REQUEST,
-  NOT_AUTHORIZED,
-  DEFAULT,
+    NOT_FOUND,
+    BAD_REQUEST,
+    NOT_AUTHORIZED,
+    DEFAULT,
 } = require("./utils/utils");
 
 const { PORT = 3000 } = process.env;
@@ -27,31 +27,31 @@ app.use(cors());
 app.options("*", cors()); //enable requests for all routes
 
 app.get("/crash-test", () => {
-  setTimeout(() => {
-    throw new Error("Server will crash now");
-  }, 0);
+    setTimeout(() => {
+        throw new Error("Server will crash now");
+    }, 0);
 });
 
 app.post(
-  "/signin",
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
+    "/signin",
+    celebrate({
+        body: Joi.object().keys({
+            email: Joi.string().required().email(),
+            password: Joi.string().required().min(8),
+        }),
     }),
-  }),
-  login
+    login
 );
 
 app.post(
-  "/signup",
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
+    "/signup",
+    celebrate({
+        body: Joi.object().keys({
+            email: Joi.string().required().email(),
+            password: Joi.string().required().min(8),
+        }),
     }),
-  }),
-  createUser
+    createUser
 );
 
 // authorization
@@ -60,7 +60,7 @@ app.use("/", require("./routes/users"));
 app.use("/", require("./routes/cards"));
 
 app.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: "Requested resource not found" });
+    res.status(NOT_FOUND).send({ message: "Requested resource not found" });
 });
 
 app.use(errorLogger);
@@ -68,18 +68,18 @@ app.use(errorLogger);
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  if (err.statusCode === NOT_FOUND)
-    res.status(NOT_FOUND).send({ message: err.message });
-  else if (err.name === "ValidationError")
-    res.status(BAD_REQUEST).send({ message: err.message });
-  else if (err.name === "CastError")
-    res.status(BAD_REQUEST).send({ message: err.message });
-  else
-    res
-      .status(DEFAULT)
-      .send({ message: "An error has occurred on the server" });
+    if (err.statusCode === NOT_FOUND)
+        res.status(NOT_FOUND).send({ message: err.message });
+    else if (err.name === "ValidationError")
+        res.status(BAD_REQUEST).send({ message: err.message });
+    else if (err.name === "CastError")
+        res.status(BAD_REQUEST).send({ message: err.message });
+    else
+        res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server" });
 });
 
 app.listen(PORT, () => {
-  console.log(`App listening at port ${PORT}`);
+    console.log(`App listening at port ${PORT}`);
 });
