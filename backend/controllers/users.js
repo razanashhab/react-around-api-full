@@ -95,5 +95,5 @@ module.exports.getUserByToken = (req, res) => {
             console.log(user);
             return res.send({ data: user });
         })
-        .catch(next);
+        .catch((err) => next(err));
 };

@@ -7,7 +7,7 @@ module.exports.getCards = (req, res) => {
             console.log(cards);
             return res.send({ data: cards });
         })
-        .catch(next);
+        .catch((err) => next(err));
 };
 
 module.exports.createCard = (req, res) => {
