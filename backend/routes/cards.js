@@ -1,55 +1,55 @@
-const router = require("express").Router();
+const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 const {
-    getCards,
-    createCard,
-    deleteCard,
-    likeACard,
-    unlikeACard,
-} = require("../controllers/cards");
-const { celebrate, Joi } = require("celebrate");
-const { validateURL } = require("../utils/validator");
+  getCards,
+  createCard,
+  deleteCard,
+  likeACard,
+  unlikeACard,
+} = require('../controllers/cards');
+const { validateURL } = require('../utils/validator');
 
 router.post(
-    "/cards",
-    celebrate({
-        body: Joi.object().keys({
-            name: Joi.string().required().min(2).max(30),
-            link: Joi.string().custom(validateURL),
-        }),
+  '/cards',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      link: Joi.string().custom(validateURL),
     }),
-    createCard
+  }),
+  createCard,
 );
 
 router.delete(
-    "/cards/:cardId",
-    celebrate({
-        params: Joi.object().keys({
-            cardId: Joi.string().alphanum().length(24),
-        }),
+  '/cards/:cardId',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().alphanum().length(24),
     }),
-    deleteCard
+  }),
+  deleteCard,
 );
 
 router.put(
-    "/cards/likes/:cardId",
-    celebrate({
-        params: Joi.object().keys({
-            cardId: Joi.string().alphanum(),
-        }),
+  '/cards/likes/:cardId',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().alphanum(),
     }),
-    likeACard
+  }),
+  likeACard,
 );
 
 router.delete(
-    "/cards/likes/:cardId",
-    celebrate({
-        params: Joi.object().keys({
-            cardId: Joi.string().alphanum(),
-        }),
+  '/cards/likes/:cardId',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().alphanum(),
     }),
-    unlikeACard
+  }),
+  unlikeACard,
 );
 
-router.get("/cards", getCards);
+router.get('/cards', getCards);
 
 module.exports = router;
