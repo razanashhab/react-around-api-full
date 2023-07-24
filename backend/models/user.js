@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
 const bcrypt = require('bcryptjs');
 const passportLocalMongoose = require('passport-local-mongoose');
-const { NotAuthorizedError } = require('../errors/NotAuthorizedError');
+const NotAuthorizedError = require('../errors/NotAuthorizedError');
 
 // write your code here
 const userSchema = new mongoose.Schema({
@@ -43,8 +43,7 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Error',
     },
-    default:
-      'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg',
+    default: 'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg',
   },
 });
 

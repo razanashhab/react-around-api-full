@@ -1,10 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Users = require('../models/user');
-const { NotFoundError } = require('../errors/NotFoundError');
-const { BadRequestError } = require('../errors/BadRequestError');
-const { ConflictError } = require('../errors/ConflictError');
-const { NotAuthorizedError } = require('../errors/NotAuthorizedError');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const ConflictError = require('../errors/ConflictError');
+const NotAuthorizedError = require('../errors/NotAuthorizedError');
 require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -48,16 +48,15 @@ module.exports.createUser = (req, res, next) => {
           return res.send({ data: usr });
         });
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
 
 module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
-  Users.findByIdAndUpdate(
-    req.user._id,
-    { name, about },
-    { new: true, runValidators: true },
-  )
+  Users.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .orFail(() => {
       throw new NotFoundError('No user with matching ID found');
     })
@@ -66,11 +65,7 @@ module.exports.updateProfile = (req, res, next) => {
 };
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  Users.findByIdAndUpdate(
-    req.user._id,
-    { avatar },
-    { new: true, runValidators: true },
-  )
+  Users.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .orFail(() => {
       throw new NotFoundError('No user with matching ID found');
     })

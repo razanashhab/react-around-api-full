@@ -1,6 +1,6 @@
 const Cards = require('../models/card');
-const { NotFoundError } = require('../errors/NotFoundError');
-const { ForbiddenError } = require('../errors/ForbiddenError');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports.getCards = (req, res, next) => {
   Cards.find({})
@@ -29,13 +29,9 @@ module.exports.deleteCard = (req, res, next) => {
 };
 
 module.exports.likeACard = (req, res, next) => {
-  Cards.findByIdAndUpdate(
-    req.params.cardId,
-    {
-      $addToSet: { likes: req.user._id },
-    },
-    { new: true },
-  )
+  Cards.findByIdAndUpdate(req.params.cardId, {
+    $addToSet: { likes: req.user._id },
+  }, { new: true })
     .orFail(() => {
       throw new NotFoundError('No card found with that id');
     })
@@ -44,11 +40,7 @@ module.exports.likeACard = (req, res, next) => {
 };
 
 module.exports.unlikeACard = (req, res, next) => {
-  Cards.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } },
-    { new: true },
-  )
+  Cards.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .orFail(() => {
       throw new NotFoundError('No card found with that id');
     })
